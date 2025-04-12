@@ -10,6 +10,7 @@ from django.conf import settings
 import random
 import unicodedata
 import re
+from django.views import View
 
 
 def generate_otp():
@@ -189,3 +190,25 @@ class ResetPasswordView(APIView):
             return Response({"error": "Session expired"}, status=400)
 
         return render(request, 'reset_password.html')
+
+# this is the basic search function, like hoe it works once databas models are created we can alter the code based om the models in database
+class search(View):
+    def get(self, request):
+        query = request.GET.get("q")
+        context = {}
+
+        if query:
+            data = User.objects.filter(username__icontains=query).first()
+            if data:
+                context['user'] = data.username
+                context['email'] = data.email
+                context['first_name'] = data.first_name
+                context['last_name'] = data.last_name
+                context['is_superuser'] = data.is_superuser
+                context['date_joined'] = data.date_joined
+            else:
+                context['error'] = "User data not found"
+        else:
+            context['error'] = "Please enter a username to search"
+
+        return render(request, "search.html", context)
