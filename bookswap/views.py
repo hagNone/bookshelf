@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
@@ -11,6 +11,9 @@ import random
 import unicodedata
 import re
 from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate, login, logout
 
 
 def generate_otp():
@@ -191,24 +194,65 @@ class ResetPasswordView(APIView):
 
         return render(request, 'reset_password.html')
 
-# this is the basic search function, like hoe it works once databas models are created we can alter the code based om the models in database
-class search(View):
+from rest_framework.views import APIView
+from django.shortcuts import render, get_object_or_404
+from .models import FactBookListing
+
+@method_decorator(login_required, name='dispatch')
+class SearchBooksAPIView(APIView):
     def get(self, request):
-        query = request.GET.get("q")
-        context = {}
-
+        query = request.GET.get('q', '')
+        books = []
         if query:
-            data = User.objects.filter(username__icontains=query).first()
-            if data:
-                context['user'] = data.username
-                context['email'] = data.email
-                context['first_name'] = data.first_name
-                context['last_name'] = data.last_name
-                context['is_superuser'] = data.is_superuser
-                context['date_joined'] = data.date_joined
-            else:
-                context['error'] = "User data not found"
-        else:
-            context['error'] = "Please enter a username to search"
+            listings = FactBookListing.objects.filter(
+                book__book_name__icontains=query
+            ).select_related('book', 'user', 'book__genre')
+            books = [
+                {'id': listing.id, 'book_name': listing.book.book_name}
+                for listing in listings
+            ]
+        return render(request, 'search.html', {'books': books, 'query': query})
 
-        return render(request, "search.html", context)
+@method_decorator(login_required, name='dispatch')
+class BookDetailAPIView(APIView):
+    def get(self, request, pk):
+        listing = get_object_or_404(
+            FactBookListing.objects.select_related('book', 'user', 'book__genre'),
+            pk=pk
+        )
+        book = {
+            'book_name': listing.book.book_name,
+            'genre': listing.book.genre.genre_name,
+            'username': listing.user.username
+        }
+        return render(request, 'book_detail.html', {'book': book})
+
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.shortcuts import render
+from .models import FactBookListing, FactGenre, FactRequest
+
+@method_decorator(login_required, name='dispatch')
+class Userprofile(View):
+    def get(self, request):
+        user = request.user
+        books = FactBookListing.objects.filter(user=user)
+        genres = FactGenre.objects.filter(user=user)
+        sent_requests = FactRequest.objects.filter(requester=user)
+        received_requests = FactRequest.objects.filter(receiver=user)
+
+        context = {
+            'user': user,
+            'books': books,
+            'genres': genres,
+            'sent_requests': sent_requests,
+            'received_requests': received_requests,
+        }
+
+        return render(request, 'profile.html', context)
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect("login")

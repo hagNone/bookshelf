@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ user.username }}'s Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.first_name }}!</h1>
+
+    <h2>📇 Your Profile</h2>
+    <ul>
+        <li><strong>Username:</strong> {{ user.username }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</li>
+        <li><strong>Member Since:</strong> {{ user.date_joined|date:"F j, Y" }}</li>
+    </ul>
+
+    <h2>📚 Books You've Listed</h2>
+    <ul>
+        {% for book in books %}
+            <li>
+                <strong>{{ book.book.book_name }}</strong> (Genre: {{ book.book.genre.genre_name }}, Listed on {{ book.listing_date|date:"M j, Y" }})
+            </li>
+        {% empty %}
+            <li>No books listed yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>🎯 Your Genre Interests</h2>
+    <ul>
+        {% for genre in genres %}
+            <li>{{ genre.genre.genre_name }}</li>
+        {% empty %}
+            <li>No interests added.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>📤 Sent Exchange Requests</h2>
+    <ul>
+        {% for req in sent_requests %}
+            <li>You requested <strong>{{ req.book.book_name }}</strong> from {{ req.receiver.username }} - Status: {{ req.request.status }}</li>
+        {% empty %}
+            <li>No requests sent yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>📥 Received Exchange Requests</h2>
+    <ul>
+        {% for req in received_requests %}
+            <li>{{ req.requester.username }} requested your book <strong>{{ req.book.book_name }}</strong> - Status: {{ req.request.status }}</li>
+        {% empty %}
+            <li>No incoming requests.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

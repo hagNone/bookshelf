@@ -1,33 +1,28 @@
+<!-- templates/search.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User Search</title>
+    <title>Book Search</title>
 </head>
 <body>
-    <h1>Search for a User</h1>
-
-    <!-- Search Form -->
-    <form method="get" action="{% url 'search_bar' %}">
-        <input type="text" name="q" placeholder="Enter username">
+    <h2>Search for a Book</h2>
+    <form method="get" action="/search/">
+        <input type="text" name="q" placeholder="Enter book name" required>
         <button type="submit">Search</button>
     </form>
 
-    <hr>
-
-    <!-- Display Results -->
-    {% if user %}
-        <h2>User Found:</h2>
-        <ul>
-            <li><strong>Username:</strong> {{ user }}</li>
-            <li><strong>Email:</strong> {{ email }}</li>
-            <li><strong>First Name:</strong> {{ first_name }}</li>
-            <li><strong>Last Name:</strong> {{ last_name }}</li>
-            <li><strong>Is Superuser:</strong> {{ is_superuser }}</li>
-            <li><strong>Date Joined:</strong> {{ date_joined }}</li>
-        </ul>
-    {% elif error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-
+    <h3>Results:</h3>
+    <ul>
+        {% if books %}
+            {% for book in books %}
+                <li>
+                    <a href="{% url 'book-detail-page' book.id %}">{{ book.book_name }}</a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>No books found</li>
+        {% endif %}
+    </ul>
+    
 </body>
 </html>
