@@ -231,7 +231,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import render
-from .models import FactBookListing, FactGenre, FactRequest
+from .models import FactBookListing, FactGenre, FactRequest, Book
+from .forms import Book_Model_Form
 
 @method_decorator(login_required, name='dispatch')
 class Userprofile(View):
@@ -256,3 +257,18 @@ class Userprofile(View):
 def user_logout(request):
     logout(request)
     return redirect("login")
+
+
+@login_required
+def post_request(request):
+
+    if request.method == 'POST':
+        form = Book_Model_Form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('search-books-page')
+    else:
+        form = Book_Model_Form()
+        return render(request,'post_request.html',{'form':form})
+
+
