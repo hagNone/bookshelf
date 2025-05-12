@@ -1,31 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ user.username }}'s Dashboard</title>
+    <title>{{ username }}'s Dashboard</title>
 </head>
 <body>
-    <h1>Welcome, {{ user.first_name }}!</h1>
+    <h1>Welcome, {{ username }}!</h1>
 
     <h2>📇 Your Profile</h2>
     <ul>
-        <li><strong>Username:</strong> {{ user.username }}</li>
-        <li><strong>Email:</strong> {{ user.email }}</li>
-        <li><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</li>
-        <li><strong>Member Since:</strong> {{ user.date_joined|date:"F j, Y" }}</li>
+        <li><strong>Username:</strong> {{ username }}</li>
+        <li><strong>Email:</strong> {{ email }}</li>
+        {% comment %} <li><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</li> {% endcomment %}
+        <li><strong>Member Since:</strong> {{ date_joined|date:"F j, Y" }}</li>
     </ul>
 
+    <form method='POST'>
+        {% csrf_token %}
+        {{book_list_form.as_p}}
+        <input type='Submit' value='Submit'>
+    </form>
+    {% if error %}
+    <p>{{error}}</p>
+    {% endif %}
     <h2>📚 Books You've Listed</h2>
     <ul>
-        {% for book in books %}
+        {% for book in Book_List %}
             <li>
-                <strong>{{ book.book.book_name }}</strong> (Genre: {{ book.book.genre.genre_name }}, Listed on {{ book.listing_date|date:"M j, Y" }})
+                <strong>{{ book.book_name }}</strong> (Genre: {{ book.genre }}, Listed on {{ book.created_at|date:"M j, Y" }})
             </li>
         {% empty %}
             <li>No books listed yet.</li>
         {% endfor %}
     </ul>
 
-    <h2>🎯 Your Genre Interests</h2>
+    {% comment %}<h2>🎯 Your Genre Interests</h2>
     <ul>
         {% for genre in genres %}
             <li>{{ genre.genre.genre_name }}</li>
@@ -50,7 +58,7 @@
         {% empty %}
             <li>No incoming requests.</li>
         {% endfor %}
-    </ul>
+    </ul> {% endcomment %}
 
 </body>
 </html>

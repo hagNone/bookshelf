@@ -10,9 +10,15 @@
     <form method="post">
         {% csrf_token %}
         <input type="text" name="otp" placeholder="Enter OTP" required><br><br>
-        <input type="text" name="username" placeholder="Username" required><br><br>
-        <input type="password" name="password" placeholder="Password" required><br><br>
+        {% comment %} <input type="text" name="username" placeholder="Username" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br> {% endcomment %}
         <button type="submit">Verify OTP</button>
     </form>
+    
+    {% if error %}
+        <p>{{error}}</p>
+        <a href={% url "register" %}>Return Back to Register Page</a>
+    {% endif %}
+
 </body>
 </html>

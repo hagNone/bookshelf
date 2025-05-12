@@ -1,29 +1,40 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import FactBookListing
+from .models import Book, Request
 
-class UserSerializer(serializers.ModelSerializer):
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['username', 'email', 'password']
+#         extra_kwargs = {'password': {'write_only': True}}
+
+
+# class Bookname(serializers.ModelSerializer):
+#     book_name=serializers.CharField(source="book_id.book_name")
+
+#     class meta:
+#         model=FactBookListing
+#         fields=["id","book_name"]
+
+# class bookdetails(serializers.ModelSerializer):
+#     book_name=serializers.CharField(source="book_id.book_name")
+#     genre=serializers.CharField(source="book_id.genre_id.genre_name")
+#     username=serializers.CharField(source="user_id.username")
+
+#     class meta:
+#         model=FactBookListing
+#         fields=['id','bookname','username','genre']
+
+
+class BookSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        model = Book
+        fields = '__all__'
 
-
-class Bookname(serializers.ModelSerializer):
-    book_name=serializers.CharField(source="book_id.book_name")
-
-    class meta:
-        model=FactBookListing
-        fields=["id","book_name"]
-
-class bookdetails(serializers.ModelSerializer):
-    book_name=serializers.CharField(source="book_id.book_name")
-    genre=serializers.CharField(source="book_id.genre_id.genre_name")
-    username=serializers.CharField(source="user_id.username")
-
-    class meta:
-        model=FactBookListing
-        fields=['id','bookname','username','genre']
+class RequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Request
+        fields = '__all__'
 
 """from django.views import View
 from django.shortcuts import render

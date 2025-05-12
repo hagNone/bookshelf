@@ -1,13 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+def default_user():
+    return User.objects.first().id
+
 class Book(models.Model):
     Genre_Options = [
         ('horror', 'Horror'),
         ('thriller', 'Thriller'),
         ('romance', 'Romance'),
     ]
-    user = models.ForeignKey(User, on_delete=models.PROTECT)  # Who posted the book
+    user = models.ForeignKey(User, on_delete=models.CASCADE,default=default_user)  # Who posted the book
+    book_id = models.AutoField(primary_key=True)
     book_name = models.CharField(max_length=255)
     book_author = models.CharField(max_length=255)
     book_description = models.TextField()
@@ -26,9 +31,9 @@ class Request(models.Model):
     ]
     request_id = models.AutoField(primary_key=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    book = models.ForeignKey(Book, related_name='requests', on_delete=models.PROTECT)
-    requester = models.ForeignKey(User, related_name='sent_requests', on_delete=models.PROTECT)
-    receiver = models.ForeignKey(User, related_name='received_requests', on_delete=models.PROTECT)
+    book = models.ForeignKey(Book, related_name='requests', on_delete=models.CASCADE)
+    requester = models.ForeignKey(User, related_name='sent_requests', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='received_requests', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Request {self.request_id} - {self.status}"
