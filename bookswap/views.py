@@ -272,10 +272,10 @@ class BookDetailAPIView(APIView):
 
 #         return render(request, 'profile.html', context)
 
-# @login_required
-# def user_logout(request):
-#     logout(request)
-#     return redirect("login")
+@login_required
+def user_logout(request):
+     logout(request)
+     return redirect("login")
 
 
 # @login_required
@@ -293,6 +293,16 @@ class BookDetailAPIView(APIView):
 
 ###############################################################################
 
+import re
+
+def strong_pass(password):
+     return(
+          len(password)>=12 and 
+          re.search(r'[A-Z]',password) and
+          re.search(r'[a-z]',password) and 
+          re.search(r'\d',password) and
+          re.search(r'[^\w\s]',password)
+     )
 
 
 #                   Register                #
@@ -307,6 +317,9 @@ class RegisterView(View):
             username = request.POST.get("username")
             email = request.POST.get("email")
             password = request.POST.get("password")
+
+            if not strong_pass(password):
+                 return render(request,'register.html',{'error':"Please use at least 12 charecters and at least one upper case and one numerical and one special character"})
 
             otp = generate_otp()
             request.session["otp"] = otp
@@ -325,6 +338,8 @@ class RegisterView(View):
             return redirect('verify_otp')
         except Exception as e:
             print(f"Error in registration: {e}")
+
+            return render(request,'register.html',{"error":"something went wrong please try again agter some time!!!"})
 
 
 

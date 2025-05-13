@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, VerifyOTPView , LoginView, Userprofile,SearchBooksAPIView,BookDetailAPIView#, SendResetOTPView, ResetPasswordView,SearchBooksAPIView,BookDetailAPIView,user_logout,post_request
+from .views import RegisterView, VerifyOTPView , LoginView, Userprofile,SearchBooksAPIView,BookDetailAPIView,user_logout#, SendResetOTPView, ResetPasswordView,SearchBooksAPIView,BookDetailAPIView,post_request
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -10,6 +10,6 @@ urlpatterns = [
     path('search/', SearchBooksAPIView.as_view(), name='search-books-page'),
     path('book/<int:pk>/', BookDetailAPIView.as_view(), name='book-detail-page'),
     path('profile/',Userprofile.as_view(),name='profile-page'),
-#     path("logout/",user_logout,name="user-Logout"),
+    path("logout/",user_logout,name="user-Logout"),
 #     path('upload_book/',post_request,name='upload_book')
 ]
