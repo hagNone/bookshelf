@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login
@@ -411,3 +411,25 @@ class Userprofile(View):
                     print(f"Error in registration: {e}")
 
 
+
+@method_decorator(login_required, name='dispatch')
+class Booklist(View):
+    def get(self,request):
+        try:
+            bookAllList = Book.objects.exclude(user=request.user)
+            return render(request,'Book_list.html',{'books':bookAllList})
+        except Exception as e:
+                    print(f"Error in registration: {e}")
+
+    def post(self,request):
+        pass
+
+
+@method_decorator(login_required, name='dispatch')
+class BookDetail(View):
+     def get(self,request,book_id):
+        try:
+             book_detail = get_object_or_404(Book, book_id=book_id)
+             return render(request,"Book_detail.html",{'book':book_detail})
+        except Exception as e:
+                    print(f"Error in registration: {e}")

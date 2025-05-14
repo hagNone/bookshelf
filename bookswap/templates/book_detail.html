@@ -8,8 +8,8 @@
     <h2>Book Details</h2>
     <p><strong>Book Name:</strong> {{ book.book_name }}</p>
     <p><strong>Genre:</strong> {{ book.genre }}</p>
-    <p><strong>Owner Username:</strong> {{ book.username }}</p>
+    <p><strong>Owner Username:</strong> {{ book.user }}</p>
 
-    <a href="/search/">Back to Search</a>
+    <a href="{% url "Book_list" %}">Back to Search</a>
 </body>
 </html>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <title>{{ username }}'s Dashboard</title>
@@ -14,11 +15,14 @@
         <li><strong>Member Since:</strong> {{ date_joined|date:"F j, Y" }}</li>
     </ul>
 
-    <form method='POST'>
-        {% csrf_token %}
-        {{book_list_form.as_p}}
-        <input type='Submit' value='Submit'>
-    </form>
+    <button id="toggleBtn" onclick="toggleform()">Toogle Form</button>
+    <div id="toggleContent" style="display:none;">
+        <form method='POST'>
+            {% csrf_token %}
+            {{book_list_form.as_p}}
+            <input type='Submit' value='Submit'>
+        </form>
+    </div>
     {% if error %}
     <p>{{error}}</p>
     {% endif %}
@@ -61,4 +65,5 @@
     </ul> {% endcomment %}
 
 </body>
+<script src="{% static 'script.js' %}"></script>
 </html>
