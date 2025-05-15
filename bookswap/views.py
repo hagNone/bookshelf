@@ -197,53 +197,53 @@ def clean_text(text):
 
 #         return render(request, 'reset_password.html')
 
-from rest_framework.views import APIView
-from django.shortcuts import render, get_object_or_404
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from .models import Book
+# from rest_framework.views import APIView
+# from django.shortcuts import render, get_object_or_404
+# from django.utils.decorators import method_decorator
+# from django.contrib.auth.decorators import login_required
+# from .models import Book
 
 
-from rest_framework.views import APIView
-from django.shortcuts import render, get_object_or_404
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from .models import Book
+# from rest_framework.views import APIView
+# from django.shortcuts import render, get_object_or_404
+# from django.utils.decorators import method_decorator
+# from django.contrib.auth.decorators import login_required
+# from .models import Book
 
 
-@method_decorator(login_required, name='dispatch')
-class SearchBooksAPIView(APIView):
-    def get(self, request):
-        query = request.GET.get('q', '')
-        books = []
-        if query:
-            listings = Book.objects.filter(book_name__icontains=query).select_related('user')
-            books = [
-                {
-                    'id': listing.book_id,
-                    'book_name': listing.book_name,
-                    'book_author': listing.book_author,
-                    'genre': listing.genre,
-                    'posted_by': listing.user.username,
-                }
-                for listing in listings
-            ]
-        return render(request, 'search.html', {'books': books, 'query': query})
+# @method_decorator(login_required, name='dispatch')
+# class SearchBooksAPIView(APIView):
+#     def get(self, request):
+#         query = request.GET.get('q', '')
+#         books = []
+#         if query:
+#             listings = Book.objects.filter(book_name__icontains=query).select_related('user')
+#             books = [
+#                 {
+#                     'id': listing.book_id,
+#                     'book_name': listing.book_name,
+#                     'book_author': listing.book_author,
+#                     'genre': listing.genre,
+#                     'posted_by': listing.user.username,
+#                 }
+#                 for listing in listings
+#             ]
+#         return render(request, 'search.html', {'books': books, 'query': query})
 
 
-@method_decorator(login_required, name='dispatch')
-class BookDetailAPIView(APIView):
-    def get(self, request, pk):
-        listing = get_object_or_404(Book.objects.select_related('user'), pk=pk)
-        book = {
-            'book_name': listing.book_name,
-            'book_author': listing.book_author,
-            'book_description': listing.book_description,
-            'genre': listing.genre,
-            'posted_by': listing.user.username,
-            'created_at': listing.created_at,
-        }
-        return render(request, 'book_detail.html', {'book': book})
+# @method_decorator(login_required, name='dispatch')
+# class BookDetailAPIView(APIView):
+#     def get(self, request, pk):
+#         listing = get_object_or_404(Book.objects.select_related('user'), pk=pk)
+#         book = {
+#             'book_name': listing.book_name,
+#             'book_author': listing.book_author,
+#             'book_description': listing.book_description,
+#             'genre': listing.genre,
+#             'posted_by': listing.user.username,
+#             'created_at': listing.created_at,
+#         }
+#         return render(request, 'book_detail.html', {'book': book})
 
 
 # from django.contrib.auth.decorators import login_required
