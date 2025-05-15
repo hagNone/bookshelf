@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>{{ username }}'s Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ username }}!</h1>
+
+    <h2>📇 Your Profile</h2>
+    <ul>
+        <li><strong>Username:</strong> {{ username }}</li>
+        <li><strong>Email:</strong> {{ email }}</li>
+        {% comment %} <li><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</li> {% endcomment %}
+        <li><strong>Member Since:</strong> {{ date_joined|date:"F j, Y" }}</li>
+    </ul>
+
+    <button id="toggleBtn" onclick="toggleform()">Toogle Form</button>
+    <div id="toggleContent" style="display:none;">
+        <form method='POST'>
+            {% csrf_token %}
+            {{book_list_form.as_p}}
+            <input type='Submit' value='Submit'>
+        </form>
+    </div>
+    {% if error %}
+    <p>{{error}}</p>
+    {% endif %}
+    <h2>📚 Books You've Listed</h2>
+    <ul>
+        {% for book in Book_List %}
+            <li>
+                <strong>{{ book.book_name }}</strong> (Genre: {{ book.genre }}, Listed on {{ book.created_at|date:"M j, Y" }})
+            </li>
+        {% empty %}
+            <li>No books listed yet.</li>
+        {% endfor %}
+    </ul>
+
+    {% comment %}<h2>🎯 Your Genre Interests</h2>
+    <ul>
+        {% for genre in genres %}
+            <li>{{ genre.genre.genre_name }}</li>
+        {% empty %}
+            <li>No interests added.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>📤 Sent Exchange Requests</h2>
+    <ul>
+        {% for req in sent_requests %}
+            <li>You requested <strong>{{ req.book.book_name }}</strong> from {{ req.receiver.username }} - Status: {{ req.request.status }}</li>
+        {% empty %}
+            <li>No requests sent yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>📥 Received Exchange Requests</h2>
+    <ul>
+        {% for req in received_requests %}
+            <li>{{ req.requester.username }} requested your book <strong>{{ req.book.book_name }}</strong> - Status: {{ req.request.status }}</li>
+        {% empty %}
+            <li>No incoming requests.</li>
+        {% endfor %}
+    </ul> {% endcomment %}
+
+</body>
+<script src="{% static 'script.js' %}"></script>
+</html>

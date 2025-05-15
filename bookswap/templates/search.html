@@ -1,0 +1,28 @@
+<!-- templates/search.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Search</title>
+</head>
+<body>
+    <h2>Search for a Book</h2>
+    <form method="get" action="/search/">
+        <input type="text" name="q" placeholder="Enter book name" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <h3>Results:</h3>
+    <ul>
+        {% if books %}
+            {% for book in books %}
+                <li>
+                    <a href="{% url 'book-detail-page' book.id %}">{{ book.book_name }}</a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>No books found</li>
+        {% endif %}
+    </ul>
+    
+</body>
+</html>
