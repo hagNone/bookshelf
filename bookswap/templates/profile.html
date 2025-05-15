@@ -44,12 +44,12 @@
         {% empty %}
             <li>No interests added.</li>
         {% endfor %}
-    </ul>
+    </ul>{% endcomment %}
 
     <h2>📤 Sent Exchange Requests</h2>
     <ul>
-        {% for req in sent_requests %}
-            <li>You requested <strong>{{ req.book.book_name }}</strong> from {{ req.receiver.username }} - Status: {{ req.request.status }}</li>
+        {% for req in sent_request %}
+            <li>You requested <strong>{{ req.book.book_name }}</strong> from {{ req.receiver.username }} - Status: {{ req.status }}</li>
         {% empty %}
             <li>No requests sent yet.</li>
         {% endfor %}
@@ -57,12 +57,12 @@
 
     <h2>📥 Received Exchange Requests</h2>
     <ul>
-        {% for req in received_requests %}
-            <li>{{ req.requester.username }} requested your book <strong>{{ req.book.book_name }}</strong> - Status: {{ req.request.status }}</li>
+        {% for req in recieved_request %}
+            <li>{{ req.requester.username }} requested your book <strong>{{ req.book.book_name }}</strong> - Status: {{ req.status }}</li>
         {% empty %}
             <li>No incoming requests.</li>
         {% endfor %}
-    </ul> {% endcomment %}
+    </ul>
 
 </body>
 <script src="{% static 'script.js' %}"></script>

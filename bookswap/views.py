@@ -414,32 +414,40 @@ class LoginView(View):
 
 @method_decorator(login_required, name='dispatch')
 class Userprofile(View):
-    try:
         def get(self,request):
-            Current_user_info = User.objects.get(id=request.user.id)
-            book_list_form = Book_Model_Form()
-            Book_List = Book.objects.filter(user=request.user)
-
-            context = {'username':Current_user_info.username,'email':Current_user_info.email,'date_joined':Current_user_info.date_joined,'book_list_form':book_list_form,'Book_List':Book_List}
-            return render(request,'profile.html',context=context)
-        
-        def post(self,request):
-            form = Book_Model_Form(request.POST)
-            if form.is_valid():
-                Submitted_Form = form.save(commit=False)
-                Submitted_Form.user = request.user
-                Submitted_Form.save()
-                print("Form saved successfully")
-                return redirect('profile-page')
-            else:
+            try:
                 Current_user_info = User.objects.get(id=request.user.id)
                 book_list_form = Book_Model_Form()
                 Book_List = Book.objects.filter(user=request.user)
-                context = {'username':Current_user_info.username,'email':Current_user_info.email,'date_joined':Current_user_info.date_joined,'book_list_form':book_list_form,'Book_List':Book_List,'error':'Form entry is invalid! please enter again.'}
-                return render(request,'profile.html',context=context)
+                sent_request = Request.objects.filter(requester=request.user)
+                receiver_request = Request.objects.filter(receiver=request.user)
 
-    except Exception as e:
+                context = {'username':Current_user_info.username,'email':Current_user_info.email,'date_joined':Current_user_info.date_joined,'book_list_form':book_list_form,'Book_List':Book_List,'sent_request':sent_request,'recieved_request':receiver_request}
+                return render(request,'profile.html',context=context)
+            except Exception as e:
                     print(f"Error in registration: {e}")
+        
+        def post(self,request):
+            try:
+                form = Book_Model_Form(request.POST)
+                if form.is_valid():
+                    Submitted_Form = form.save(commit=False)
+                    Submitted_Form.user = request.user
+                    Submitted_Form.save()
+                    print("Form saved successfully")
+                    return redirect('profile-page')
+                else:
+                    Current_user_info = User.objects.get(id=request.user.id)
+                    book_list_form = Book_Model_Form()
+                    Book_List = Book.objects.filter(user=request.user)
+                    sent_request = Request.objects.filter(requester=request.user)
+                    receiver_request = Request.objects.filter(receiver=request.user)
+
+                    context = {'username':Current_user_info.username,'email':Current_user_info.email,'date_joined':Current_user_info.date_joined,'book_list_form':book_list_form,'Book_List':Book_List,'error':'Form entry is invalid! please enter again.','sent_request':sent_request,'recieved_request':receiver_request}
+                    return render(request,'profile.html',context=context)
+            except Exception as e:
+                    print(f"Error in registration: {e}")
+        
 
 
 
@@ -464,3 +472,27 @@ class BookDetail(View):
              return render(request,"Book_detail.html",{'book':book_detail})
         except Exception as e:
                     print(f"Error in registration: {e}")
+
+@method_decorator(login_required, name='dispatch')
+class RequestBook(View):
+    def get(self,request):
+        pass
+        # redirect("Book_list")
+
+    def post(self,request,book_id):
+        try:
+            book_detail = get_object_or_404(Book,book_id=book_id)
+            owner = book_detail.user
+            requester = request.user
+
+            request_exists = Request.objects.filter(book=book_detail,receiver=owner,requester=requester).exists()
+
+            if not request_exists:
+                request_obj = Request.objects.create(book=book_detail,receiver=owner,requester=requester,status="pending")
+                return redirect("book-detail-page",book_id=book_id)
+            
+            return redirect("Book_list")
+        except Exception as e:
+                    print(f"Error in registration: {e}")
+
+        

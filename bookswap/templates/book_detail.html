@@ -9,6 +9,10 @@
     <p><strong>Book Name:</strong> {{ book.book_name }}</p>
     <p><strong>Genre:</strong> {{ book.genre }}</p>
     <p><strong>Owner Username:</strong> {{ book.user }}</p>
+    <form method="POST" action="{% url "Request_Book" book.book_id %}">
+        {% csrf_token %}
+        <button type="Submit">Request This Book</button>
+    </form>
 
     <a href="{% url "Book_list" %}">Back to Search</a>
 </body>
