@@ -495,4 +495,19 @@ class RequestBook(View):
         except Exception as e:
                     print(f"Error in registration: {e}")
 
-        
+@method_decorator(login_required, name='dispatch')
+class Requestaccept(View):
+    def post(self,request,request_id):
+        Update_request = get_object_or_404(Request, request_id=request_id)
+        Update_request.status = "accepted"
+        Update_request.save()
+        return redirect("profile-page")
+          
+
+@method_decorator(login_required, name='dispatch')
+class Requestreject(View):
+     def post(self,request,request_id):
+        Update_request = get_object_or_404(Request, request_id=request_id)
+        Update_request.status = "declined"
+        Update_request.save()
+        return redirect("profile-page")

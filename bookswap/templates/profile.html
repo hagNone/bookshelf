@@ -59,6 +59,16 @@
     <ul>
         {% for req in recieved_request %}
             <li>{{ req.requester.username }} requested your book <strong>{{ req.book.book_name }}</strong> - Status: {{ req.status }}</li>
+            {% if req.status == "pending" %}
+            <form method="POST" action="{% url 'Request_Accept' req.request_id %}" style="display:inline-block;">
+                {% csrf_token %}
+                <button type="Submit">Accept</button>
+            </form>
+            <form method="POST" action="{% url 'Request_Reject' req.request_id %}">
+                {% csrf_token %}
+                <button type="Submit">Reject</button>
+            </form>
+            {% endif %}
         {% empty %}
             <li>No incoming requests.</li>
         {% endfor %}
